@@ -1,0 +1,164 @@
+/*==============================================================*/
+/* DBMS name:      MySQL 5.0                                    */
+/* Created on:     16/11/2021 0:38:34                           */
+/*==============================================================*/
+
+
+drop table if exists CLIENTE;
+
+drop table if exists DRON;
+
+drop table if exists HORARIO;
+
+drop table if exists INCIDENCIAS;
+
+drop table if exists OPERARIOS;
+
+drop table if exists RESPALDO;
+
+/*==============================================================*/
+/* Table: CLIENTE                                               */
+/*==============================================================*/
+create table CLIENTE
+(
+   ID_CLIENTES          int not null,
+   TIPO_DE_CLIENTE      char(20),
+   FECHA_DE_INICIO      date,
+   FECHA_DE_FIN_        date,
+   PAGO_DE_CONTRATO     date,
+   TOTAL_DE_DRONES_     date,
+   primary key (ID_CLIENTES)
+);
+
+/*==============================================================*/
+/* Table: DRON                                                  */
+/*==============================================================*/
+create table DRON
+(
+   ID_CLIENTES          int not null,
+   TIPO_DE_CLIENTE      char(20) not null,
+   FECHA_DE_INICIO      date not null,
+   FECHA_DE_FIN_        date not null,
+   PAGO_DE_CONTRATO     date not null,
+   TOTAL_DE_DRONES_     date not null,
+   ID_DRON              int,
+   FRABRICANTE          varchar(5),
+   HORA_DE_VUELO        date,
+   FECHA_DE_ADQUICICION_ date,
+   TIPO_DE_MANTENIMIENTO varchar(3),
+   ID_GARANTIA          int,
+   primary key (ID_CLIENTES, TIPO_DE_CLIENTE, FECHA_DE_INICIO, FECHA_DE_FIN_, PAGO_DE_CONTRATO, TOTAL_DE_DRONES_)
+);
+
+/*==============================================================*/
+/* Table: HORARIO                                               */
+/*==============================================================*/
+create table HORARIO
+(
+   ID_OPERARIOS         int not null,
+   OPE_ID_CLIENTES      int not null,
+   TIPO_DE_CLIENTE      char(20) not null,
+   FECHA_DE_INICIO      date not null,
+   FECHA_DE_FIN_        date not null,
+   PAGO_DE_CONTRATO     date not null,
+   TOTAL_DE_DRONES_     date not null,
+   DRO_ID_CLIENTES      int,
+   DRO_TIPO_DE_CLIENTE  char(20),
+   DRO_FECHA_DE_INICIO  date,
+   DRO_FECHA_DE_FIN_    date,
+   DRO_PAGO_DE_CONTRATO date,
+   DRO_TOTAL_DE_DRONES_ date,
+   ID_CLIENTES          int,
+   ID_HORAS             date,
+   HORA_DE_INICI        date,
+   HORA_DE_ENTREGA_     date,
+   primary key (ID_OPERARIOS, OPE_ID_CLIENTES, TIPO_DE_CLIENTE, FECHA_DE_INICIO, FECHA_DE_FIN_, PAGO_DE_CONTRATO, TOTAL_DE_DRONES_)
+);
+
+/*==============================================================*/
+/* Table: INCIDENCIAS                                           */
+/*==============================================================*/
+create table INCIDENCIAS
+(
+   ID_OPERARIOS         int not null,
+   OPE_ID_CLIENTES      int not null,
+   TIPO_DE_CLIENTE      char(20) not null,
+   FECHA_DE_INICIO      date not null,
+   FECHA_DE_FIN_        date not null,
+   PAGO_DE_CONTRATO     date not null,
+   TOTAL_DE_DRONES_     date not null,
+   DRO_ID_CLIENTES      int,
+   DRO_TIPO_DE_CLIENTE  char(20),
+   DRO_FECHA_DE_INICIO  date,
+   DRO_FECHA_DE_FIN_    date,
+   DRO_PAGO_DE_CONTRATO date,
+   DRO_TOTAL_DE_DRONES_ date,
+   ID_CLIENTES          int,
+   ID_INCIDENCIAS       int,
+   NOMBRE               varchar(10),
+   INCIDENCIA           varchar(50),
+   HORA_                date,
+   TECNICO              varchar(5),
+   primary key (ID_OPERARIOS, OPE_ID_CLIENTES, TIPO_DE_CLIENTE, FECHA_DE_INICIO, FECHA_DE_FIN_, PAGO_DE_CONTRATO, TOTAL_DE_DRONES_)
+);
+
+/*==============================================================*/
+/* Table: OPERARIOS                                             */
+/*==============================================================*/
+create table OPERARIOS
+(
+   ID_OPERARIOS         int not null,
+   ID_CLIENTES          int not null,
+   TIPO_DE_CLIENTE      char(20) not null,
+   FECHA_DE_INICIO      date not null,
+   FECHA_DE_FIN_        date not null,
+   PAGO_DE_CONTRATO     date not null,
+   TOTAL_DE_DRONES_     date not null,
+   DATOS_               varchar(5),
+   APELLIDO             varchar(5),
+   REVICION_DE_SALIDA_  date,
+   FIN_DE_OPERACION     date,
+   primary key (ID_OPERARIOS, ID_CLIENTES, TIPO_DE_CLIENTE, FECHA_DE_INICIO, FECHA_DE_FIN_, PAGO_DE_CONTRATO, TOTAL_DE_DRONES_)
+);
+
+/*==============================================================*/
+/* Table: RESPALDO                                              */
+/*==============================================================*/
+create table RESPALDO
+(
+   ID_RESPALDO          int not null,
+   ID_CLIENTES          int,
+   DESCRIPCION          varchar(20),
+   HORAS_DE_VUELO_      date,
+   primary key (ID_RESPALDO)
+);
+
+alter table CLIENTE add constraint FK_DRON_CLIENTE foreign key (ID_CLIENTES, TIPO_DE_CLIENTE, FECHA_DE_INICIO, FECHA_DE_FIN_, PAGO_DE_CONTRATO, TOTAL_DE_DRONES_)
+      references DRON (ID_CLIENTES, TIPO_DE_CLIENTE, FECHA_DE_INICIO, FECHA_DE_FIN_, PAGO_DE_CONTRATO, TOTAL_DE_DRONES_) on delete restrict on update restrict;
+
+alter table DRON add constraint FK_CLIENTE_DRON foreign key (ID_CLIENTES)
+      references CLIENTE (ID_CLIENTES) on delete restrict on update restrict;
+
+alter table HORARIO add constraint FK_CLIENTE_HORARIO foreign key (ID_CLIENTES)
+      references CLIENTE (ID_CLIENTES) on delete restrict on update restrict;
+
+alter table HORARIO add constraint FK_DRON_HORARIO foreign key (DRO_ID_CLIENTES, DRO_TIPO_DE_CLIENTE, DRO_FECHA_DE_INICIO, DRO_FECHA_DE_FIN_, DRO_PAGO_DE_CONTRATO, DRO_TOTAL_DE_DRONES_)
+      references DRON (ID_CLIENTES, TIPO_DE_CLIENTE, FECHA_DE_INICIO, FECHA_DE_FIN_, PAGO_DE_CONTRATO, TOTAL_DE_DRONES_) on delete restrict on update restrict;
+
+alter table HORARIO add constraint FK_OPERARIOS_HORARIO foreign key (ID_OPERARIOS, OPE_ID_CLIENTES, TIPO_DE_CLIENTE, FECHA_DE_INICIO, FECHA_DE_FIN_, PAGO_DE_CONTRATO, TOTAL_DE_DRONES_)
+      references OPERARIOS (ID_OPERARIOS, ID_CLIENTES, TIPO_DE_CLIENTE, FECHA_DE_INICIO, FECHA_DE_FIN_, PAGO_DE_CONTRATO, TOTAL_DE_DRONES_) on delete restrict on update restrict;
+
+alter table INCIDENCIAS add constraint FK_CLIENTE_INCIDENCIAS foreign key (ID_CLIENTES)
+      references CLIENTE (ID_CLIENTES) on delete restrict on update restrict;
+
+alter table INCIDENCIAS add constraint FK_DRON_INCIDENCIAS foreign key (DRO_ID_CLIENTES, DRO_TIPO_DE_CLIENTE, DRO_FECHA_DE_INICIO, DRO_FECHA_DE_FIN_, DRO_PAGO_DE_CONTRATO, DRO_TOTAL_DE_DRONES_)
+      references DRON (ID_CLIENTES, TIPO_DE_CLIENTE, FECHA_DE_INICIO, FECHA_DE_FIN_, PAGO_DE_CONTRATO, TOTAL_DE_DRONES_) on delete restrict on update restrict;
+
+alter table INCIDENCIAS add constraint FK_OPERARIOS_INCIDENCIAS foreign key (ID_OPERARIOS, OPE_ID_CLIENTES, TIPO_DE_CLIENTE, FECHA_DE_INICIO, FECHA_DE_FIN_, PAGO_DE_CONTRATO, TOTAL_DE_DRONES_)
+      references OPERARIOS (ID_OPERARIOS, ID_CLIENTES, TIPO_DE_CLIENTE, FECHA_DE_INICIO, FECHA_DE_FIN_, PAGO_DE_CONTRATO, TOTAL_DE_DRONES_) on delete restrict on update restrict;
+
+alter table OPERARIOS add constraint FK_DRON_OPERARIOS foreign key (ID_CLIENTES, TIPO_DE_CLIENTE, FECHA_DE_INICIO, FECHA_DE_FIN_, PAGO_DE_CONTRATO, TOTAL_DE_DRONES_)
+      references DRON (ID_CLIENTES, TIPO_DE_CLIENTE, FECHA_DE_INICIO, FECHA_DE_FIN_, PAGO_DE_CONTRATO, TOTAL_DE_DRONES_) on delete restrict on update restrict;
+
+alter table RESPALDO add constraint FK_RELATIONSHIP_5 foreign key (ID_CLIENTES)
+      references CLIENTE (ID_CLIENTES) on delete restrict on update restrict;
